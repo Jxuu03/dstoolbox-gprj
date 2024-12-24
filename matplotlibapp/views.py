@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('Agg')
+
 import urllib.parse
 from django.shortcuts import render,HttpResponse
 import matplotlib.pyplot as plt
@@ -11,15 +14,18 @@ import urllib,base64
 
 # Create your views here.
 def home(request):
-    data = pd.read_csv('matplotlibapp\media\smartphones_cleaned_v6.csv')
-    data["model"].value_counts().plot(kind='bar')
-    plt.title("model")
-    plt.xlabel('Category')
-    plt.ylabel('Count')
+      
+    # โหลดข้อมูล
+    data = pd.read_csv('matplotlibapp/media/smartphones_cleaned_v6.csv')
 
-    fig, ax = plt.subplots(figsize=(2, 2))
+    # สร้างกราฟ
+    fig, ax = plt.subplots(figsize=(6, 4))  # กำหนดขนาดกราฟ
+    data["brand_name"].value_counts().plot(kind='bar', ax=ax)  # ใช้ ax ที่กำหนด
+    ax.set_title("brand_name Distribution")
+    ax.set_xlabel('Category')
+    ax.set_ylabel('Count')
 
-
+    # แปลงกราฟเป็น Base64
     buf = io.BytesIO()
     fig.savefig(buf, format="png")
     buf.seek(0)
