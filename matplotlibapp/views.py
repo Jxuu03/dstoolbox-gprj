@@ -1,24 +1,25 @@
 import matplotlib
+
 matplotlib.use('Agg')
 
 import urllib.parse
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render, HttpResponse
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import plotly.io as pio
 import io
-import urllib,base64
+import urllib, base64
 
 
 # data = pd.read_excel('matplotlibapp/media/new dataset.xlsx', engine='openpyxl')
 
 # Create your views here.
 def home(request):
-      
     data = pd.read_csv('matplotlibapp/media/smartphones_cleaned_v6.csv')
 
-    fig, ax = plt.subplots(figsize=(6, 4)) 
-    data["brand_name"].value_counts().plot(kind='bar', ax=ax)  
+    fig, ax = plt.subplots(figsize=(6, 4))
+    data["brand_name"].value_counts().plot(kind='bar', ax=ax)
     ax.set_title("brand_name Distribution")
     ax.set_xlabel('Category')
     ax.set_ylabel('Count')
@@ -32,17 +33,32 @@ def home(request):
 
     return render(request, 'matplotlibapp/graph.html', {'data': uri})
 
-def top_5(request):
-    data = pd.read_csv('matplotlibapp/media/smartphones_cleaned_v6.csv')
-    top_5_brands = data['brand_name'].value_counts().head(5).reset_index()
-    top_5_brands.columns = ['brand_name', 'count']  
 
+def pie(request):
+    df = pd.read_csv('matplotlibapp/media/smartphones_cleaned_v6.csv')
 
-    fig = plt.bar(top_5_brands, x='brand_name', y='count', title='Top 5 Smartphone Brands', 
-                labels={'count': 'Number of Phones', 'brand_name': 'Brand Name'})
+    data = df['internal_memory'].value_counts()
+    labels = data.index
+    sizes = data.values
 
-    # fig.show()
-    pass
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax.pie(
+        sizes,
+        labels=labels,
+        autopct='%1.1f%%',
+        startangle=90,
+        colors=plt.cm.Paired.colors
+    )
+    ax.set_title("Internal Memory Distribution by Brand")
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format="png")
+    buf.seek(0)
+    graph_data = base64.b64encode(buf.read()).decode()
+    buf.close()
+
+    return render(request, 'matplotlibapp/pie.html', {'graph': graph_data})
+
 
 def top_5(request):
     data = pd.read_csv('matplotlibapp/media/smartphones_cleaned_v6.csv')
