@@ -1,0 +1,28 @@
+{% extends "matplotlibapp/base.html" %}
+
+{% block content %}
+<div style="text-align: center; margin: 20px;">
+  <!-- กราฟ -->
+  <h2>Top 5 Smartphone Models</h2>
+  <img src="data:image/png;base64,{{ data }}" alt="Graph" height="400" width="600">
+
+  <!-- ตารางแสดง Top 5 -->
+  <h3>Top 5 Models and Counts</h3>
+  <table style="margin: 0 auto; border-collapse: collapse; width: 50%;">
+    <thead>
+      <tr>
+        <th style="border: 1px solid black; padding: 8px;">Model</th>
+        <th style="border: 1px solid black; padding: 8px;">Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for model, count in top_5.items %}
+      <tr>
+        <td style="border: 1px solid black; padding: 8px;">{{ model }}</td>
+        <td style="border: 1px solid black; padding: 8px;">{{ count }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}
