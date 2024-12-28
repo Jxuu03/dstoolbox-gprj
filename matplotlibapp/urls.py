@@ -3,6 +3,7 @@ from django.urls import path,include
 from matplotlibapp.views import *
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path('',home,name='home')
+    path('',home,name='home'),
+    path('top_5/',top_5,name='top_5'),
+    path('pie',pie,name='pie')
 ]
